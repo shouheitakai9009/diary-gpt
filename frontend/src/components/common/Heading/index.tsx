@@ -21,9 +21,9 @@ export const Heading = ({
         as === 'h2' &&
           'scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-4xl',
         as === 'h3' &&
-          'scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-3xl',
+          'scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-lg',
         as === 'h4' &&
-          'scroll-m-20 text-xl font-semibold tracking-tight lg:text-2xl',
+          'scroll-m-20 text-md font-semibold tracking-tighter lg:text-md',
         className,
       )}
       {...props}

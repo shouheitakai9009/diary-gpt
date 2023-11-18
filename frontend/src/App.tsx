@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from './components/theme-provider';
-import { DemoPage } from './features/DemoPage';
+import { TopPage } from './features/TopPage';
 
 function App() {
   const queryClient = new QueryClient();
@@ -17,7 +17,7 @@ function App() {
             <Routes>
               <Route path="/" element={<LandingLayout />}>
                 <Route path="/" index element={<LandingPage />} />
-                <Route path="/demo" element={<DemoPage />} />
+                <Route path="/top" element={<TopPage />} />
               </Route>
             </Routes>
           </BrowserRouter>

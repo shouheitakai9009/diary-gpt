@@ -32,7 +32,7 @@ export const FirstViewArea = () => {
       </Text>
       <section className="mt-20 gap-2 flex items-center">
         <Link
-          to="/demo"
+          to="/top"
           className={cn('shadow-lg', buttonVariants({ variant: 'secondary' }))}
         >
           <BookOpen size={16} className="mr-2" />
