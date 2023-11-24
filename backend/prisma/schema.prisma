@@ -6,6 +6,86 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  username String
+  email String @unique
+  password String
+  ageGroup AgeGroup
+  level Level
+  registerStatus RegisterStatus
+  diaries Diary[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  deleted Boolean @default(false)
+}
+
+model Diary {
+  id Int @id @default(autoincrement())
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+  drafts DiaryDraft[]
+  histories DiaryHistory[]
+  feedbacks DiaryFeedback[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  deleted Boolean @default(false)
+}
+
+model DiaryHistory {
+  id Int @id @default(autoincrement())
+  diary Diary @relation(fields: [diaryId], references: [id])
+  diaryId Int
+  content String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  deleted Boolean @default(false)
+}
+
+model DiaryDraft {
+  id Int @id @default(autoincrement())
+  diary Diary @relation(fields: [diaryId], references: [id])
+  diaryId Int
+  title String @db.VarChar(100)
+  content String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  deleted Boolean @default(false)
+}
+
+model DiaryFeedback {
+  id Int @id @default(autoincrement())
+  diary Diary @relation(fields: [diaryId], references: [id])
+  diaryId Int
+  isMe Boolean
+  content String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  deleted Boolean @default(false)
+}
+
+enum AgeGroup {
+  U20 // -19
+  U30 // 20-29
+  U40 // 30-39
+  U50 // 40-49
+  U60 // 50-59
+}
+
+enum Level {
+  BEGINNER
+  ELEMENTARY
+  INTERMEDIATE
+  ADVANCED
+  PROFICIENT
+}
+
+enum RegisterStatus {
+  REGISTERED
+  PROVISIONAL_REGISTERED
+  UNREGISTERED
 }

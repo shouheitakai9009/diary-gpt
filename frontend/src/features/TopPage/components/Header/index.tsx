@@ -4,9 +4,11 @@ import {
   MenubarContent,
   MenubarItem,
   MenubarMenu,
+  MenubarShortcut,
   MenubarTrigger,
 } from '@/components/common/Menubar';
-import { FilePlus } from 'lucide-react';
+import { Command, FilePlus } from 'lucide-react';
+import { Text } from '@/components/common/Text';
 
 export const Header = () => {
   return (
@@ -17,6 +19,19 @@ export const Header = () => {
       </Button>
       <img src="/images/icon.png" className="w-7 h-7" />
       <Menubar className="border-0">
+        <MenubarMenu>
+          <MenubarTrigger>日記設定</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem>
+              フォントを拡大
+              <MenubarShortcut className="flex items-center">
+                <Command strokeWidth={1.5} size={18} />
+                <Text className="text-lg">+</Text>
+              </MenubarShortcut>
+            </MenubarItem>
+            <MenubarItem>フォントを縮小</MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
         <MenubarMenu>
           <MenubarTrigger>テンプレート</MenubarTrigger>
           <MenubarContent>
@@ -35,7 +50,7 @@ export const Header = () => {
           </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
-          <MenubarTrigger>保存メニュー</MenubarTrigger>
+          <MenubarTrigger>保存</MenubarTrigger>
           <MenubarContent>
             <MenubarItem>下書き保存</MenubarItem>
             <MenubarItem>保存</MenubarItem>
