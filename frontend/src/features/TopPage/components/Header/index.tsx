@@ -7,8 +7,7 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from '@/components/common/Menubar';
-import { Command, FilePlus } from 'lucide-react';
-import { Text } from '@/components/common/Text';
+import { FilePlus } from 'lucide-react';
 
 export const Header = () => {
   return (
@@ -24,10 +23,7 @@ export const Header = () => {
           <MenubarContent>
             <MenubarItem>
               フォントを拡大
-              <MenubarShortcut className="flex items-center">
-                <Command strokeWidth={1.5} size={18} />
-                <Text className="text-lg">+</Text>
-              </MenubarShortcut>
+              <MenubarShortcut>⌘T</MenubarShortcut>
             </MenubarItem>
             <MenubarItem>フォントを縮小</MenubarItem>
           </MenubarContent>

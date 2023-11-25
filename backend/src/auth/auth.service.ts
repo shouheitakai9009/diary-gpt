@@ -1,13 +1,6 @@
-import {
-  Get,
-  Injectable,
-  UnauthorizedException,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { AuthGuard } from './auth.guard';
 
 @Injectable()
 export class AuthService {
@@ -16,20 +9,16 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signIn(username: string, password: string) {
-    const user = await this.usersService.findOne();
-    if (user.password !== password) {
+  async signIn(
+    email: string,
+    password: string,
+  ): Promise<{ accessToken: string; userId: number }> {
+    const user = await this.usersService.findUniqueByWhenUnAuthorized(email);
+    if (user?.password !== password) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: user.id, username: user.username };
-    return {
-      accessToken: await this.jwtService.signAsync(payload),
-    };
-  }
-
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+    const payload = { sub: user.id, username: user.email };
+    const accessToken = await this.jwtService.signAsync(payload);
+    return { accessToken, userId: user.id };
   }
 }

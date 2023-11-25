@@ -5,7 +5,9 @@ import { PrismaService } from 'src/prisma.service';
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findOne() {
-    return this.prisma.user.findFirst();
+  async findUniqueByWhenUnAuthorized(email: string) {
+    return this.prisma.user.findFirst({
+      where: { email },
+    });
   }
 }

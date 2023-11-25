@@ -1,5 +1,19 @@
+import { ACCESS_TOKEN } from '@/constants/auth';
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:3000';
+const api = axios.create({
+  baseURL: import.meta.env.VITE_ENDPOINT,
+});
 
-export const api = axios;
+api.interceptors.request.use(
+  (config) => {
+    const accessToken = window.localStorage.getItem(ACCESS_TOKEN);
+    if (accessToken) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+export { api };
