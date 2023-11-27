@@ -1,11 +1,16 @@
 import { useMutation } from 'react-query';
-import { API } from '../../../apis';
-import { SignInReqParams } from '@/apis/auth';
+import { useAxiosWrapper } from '@/apis/useAxiosWrapper';
 
-export const useSignIn = () =>
-  useMutation({
+type SignInReqParams = { email: string; password: string };
+type SignInResponse = { accessToken: string };
+
+export const useSignIn = () => {
+  const { api } = useAxiosWrapper();
+
+  return useMutation({
     mutationFn: async (params: SignInReqParams) => {
-      const response = await API.signIn(params);
+      const response = await api.post<SignInResponse>('/auth/login', params);
       return response.data.accessToken;
     },
   });
+};

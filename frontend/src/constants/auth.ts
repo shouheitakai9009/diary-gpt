@@ -1,1 +1,1 @@
-export const ACCESS_TOKEN = 'access-token' as const
+export const RECOIL_PERSIST = 'recoil-persist';

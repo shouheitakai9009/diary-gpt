@@ -16,21 +16,39 @@ import {
   FormMessage,
 } from '@/components/common/Form';
 import { Input } from '@/components/common/Input';
-import { ACCESS_TOKEN } from '@/constants/auth';
 import { useSignIn } from '@/hooks/mutation/auth/useSignIn';
 import * as z from 'zod';
 import { signInFormSchema, useValiate } from './useValidate';
+import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { useSetRecoilState } from 'recoil';
+import { authState } from '@/recoil/authState/atom';
+import { useQueryClient } from 'react-query';
+import { userKey } from '@/hooks/queries/useUser';
+import { useNavigate } from 'react-router-dom';
 
 export const SignInDialog = () => {
+  const [loading, setLoading] = useState(false);
   const form = useValiate();
   const signIn = useSignIn();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  const setAccessToken = useSetRecoilState(authState.accessToken);
 
   const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
-    const accessToken = await signIn.mutateAsync({
-      email: values.email,
-      password: values.password,
-    });
-    window.localStorage.setItem(ACCESS_TOKEN, accessToken);
+    setLoading(true);
+    try {
+      const newAccessToken = await signIn.mutateAsync({
+        email: values.email,
+        password: values.password,
+      });
+      setAccessToken(newAccessToken);
+      queryClient.invalidateQueries([userKey]);
+      navigate('/top');
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   return (
@@ -91,8 +109,12 @@ export const SignInDialog = () => {
               )}
             />
             <div className="mt-4 flex justify-end">
-              <Button type="submit" onSubmit={form.handleSubmit(onSubmit)}>
-                ログインしてはじめる
+              <Button
+                type="submit"
+                disabled={loading}
+                onSubmit={form.handleSubmit(onSubmit)}
+              >
+                {loading ? <Loader2 /> : 'ログインしてはじめる'}
               </Button>
             </div>
           </form>

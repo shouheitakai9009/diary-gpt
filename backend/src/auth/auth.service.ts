@@ -15,10 +15,16 @@ export class AuthService {
   ): Promise<{ accessToken: string; userId: number }> {
     const user = await this.usersService.findUniqueByWhenUnAuthorized(email);
     if (user?.password !== password) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(
+        'メールアドレスまたはパスワードが違います',
+      );
     }
     const payload = { sub: user.id, username: user.email };
     const accessToken = await this.jwtService.signAsync(payload);
     return { accessToken, userId: user.id };
+  }
+
+  async getUser(userId: number) {
+    return await this.usersService.findId(userId);
   }
 }
