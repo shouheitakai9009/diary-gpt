@@ -4,6 +4,7 @@ import {
   AvatarImage,
 } from '@/components/common/Avatar';
 import { SignInDialog } from '@/components/ui/SignInDialog';
+import { SignUpDialog } from '@/components/ui/SignUpDialog/components';
 import { useUser } from '@/hooks/queries/useUser';
 import { Link } from 'react-router-dom';
 
@@ -12,6 +13,10 @@ export const LandingPage = () => {
 
   return (
     <article>
+      <img
+        src="https://www.illust-box.jp/db_img/sozai/00006/68840/watermark.jpg"
+        className="w-full h-full"
+      />
       <header className="flex justify-between items-center h-14 px-4">
         <h1>Landing Page</h1>
         {user ? (
@@ -28,6 +33,7 @@ export const LandingPage = () => {
           </Link>
         ) : (
           <div>
+            <SignUpDialog />
             <SignInDialog />
           </div>
         )}

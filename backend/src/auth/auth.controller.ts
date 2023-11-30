@@ -11,6 +11,7 @@ import {
 import { AuthService } from './auth.service';
 import { Public } from 'src/factory/public';
 import { AuthGuard } from './auth.guard';
+import { SigninDto } from './dto/signin.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -19,7 +20,18 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async signIn(@Body() signInDto: { email: string; password: string }) {
+  async signIn(@Body() signInDto: SigninDto) {
+    const { accessToken } = await this.authService.signIn(
+      signInDto.email,
+      signInDto.password,
+    );
+    return { accessToken };
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('signup')
+  async signUpForEmail(@Body() signInDto: { email: string; password: string }) {
     const { accessToken } = await this.authService.signIn(
       signInDto.email,
       signInDto.password,
