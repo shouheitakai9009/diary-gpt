@@ -12,6 +12,7 @@ import { AuthService } from './auth.service';
 import { Public } from 'src/factory/public';
 import { AuthGuard } from './auth.guard';
 import { SigninDto } from './dto/signin.dto';
+import { SignupForEmailDto } from './dto/signupForEmail.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -21,22 +22,16 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async signIn(@Body() signInDto: SigninDto) {
-    const { accessToken } = await this.authService.signIn(
-      signInDto.email,
-      signInDto.password,
-    );
-    return { accessToken };
+    const response = await this.authService.signIn(signInDto);
+    return response;
   }
 
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  async signUpForEmail(@Body() signInDto: { email: string; password: string }) {
-    const { accessToken } = await this.authService.signIn(
-      signInDto.email,
-      signInDto.password,
-    );
-    return { accessToken };
+  async signUpForEmail(@Body() signUpDto: SignupForEmailDto) {
+    const response = await this.authService.signUpForEmail(signUpDto);
+    return response;
   }
 
   @UseGuards(AuthGuard)

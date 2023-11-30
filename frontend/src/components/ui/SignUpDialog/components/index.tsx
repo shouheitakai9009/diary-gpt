@@ -22,11 +22,16 @@ import { Level } from '@/constants/level';
 import { Step3 } from './step3';
 import { Step4 } from './step4';
 import { Complete } from './complete';
+import { Spinner } from '@/components/common/Spinner';
+import { useUploadImage } from '@/hooks/mutation/user/useUploadImage';
+import { useSignUp } from '@/hooks/mutation/auth/useSignUp';
 
 export const SignUpDialog = () => {
   const [fields, setFields] = useState<UserField>({});
   const [stepNum, setStepNum] = useState<number>(1);
   const [previousStepNum, setPreviousStepNum] = useState(0);
+  const signUpMutation = useSignUp();
+  const uploadImageMutation = useUploadImage();
 
   const updateStepNum = (newStepNum: number) => {
     setStepNum((prev) => {
@@ -61,9 +66,18 @@ export const SignUpDialog = () => {
     updateStepNum(4);
   };
 
-  const onRegistration = (uploadImage: File | null) => {
-    console.log('登録完了');
-    updateStepNum(5);
+  const onRegistration = async (uploadImage: File | null) => {
+    const response = await signUpMutation.mutateAsync(fields);
+    if (response) {
+      if (uploadImage) {
+        console.log(response.id);
+        await uploadImageMutation.mutateAsync({
+          file: uploadImage,
+          userId: response.id,
+        });
+      }
+      updateStepNum(5);
+    }
   };
 
   return (
@@ -182,6 +196,9 @@ export const SignUpDialog = () => {
             </motion.div>
           )}
         </AnimatePresence>
+        {uploadImageMutation.isLoading && (
+          <Spinner size="fit">アカウント作成中...</Spinner>
+        )}
       </DialogContent>
     </Dialog>
   );

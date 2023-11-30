@@ -2,7 +2,7 @@ import { useMutation } from 'react-query';
 import { useAxiosWrapper } from '@/apis/useAxiosWrapper';
 
 type SignInReqParams = { email: string; password: string };
-type SignInResponse = { accessToken: string };
+type SignInResponse = { accessToken: string; userId: number };
 
 export const useSignIn = () => {
   const { api } = useAxiosWrapper();

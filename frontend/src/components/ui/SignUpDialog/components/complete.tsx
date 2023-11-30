@@ -49,12 +49,10 @@ export const Complete = () => {
             <Text className="leading-6">
               あなたのメンバー登録が完了しました！
               <br />
-              下のボタンをクリックして
-              <br />
-              いますぐ英日記を書いていきましょう！
+              いますぐログインして、英日記を書いていきましょう！
             </Text>
             <Link to="/top" className={cn(buttonVariants(), 'mt-6')}>
-              英日記を始める
+              閉じる
             </Link>
           </motion.div>
         )}

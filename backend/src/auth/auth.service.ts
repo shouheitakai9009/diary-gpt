@@ -1,6 +1,13 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { SigninDto } from './dto/signin.dto';
+import { SignupForEmailDto } from './dto/signupForEmail.dto';
 
 @Injectable()
 export class AuthService {
@@ -10,11 +17,12 @@ export class AuthService {
   ) {}
 
   async signIn(
-    email: string,
-    password: string,
+    dto: SigninDto,
   ): Promise<{ accessToken: string; userId: number }> {
-    const user = await this.usersService.findUniqueByWhenUnAuthorized(email);
-    if (user?.password !== password) {
+    const user = await this.usersService.findUniqueByWhenUnAuthorized(
+      dto.email,
+    );
+    if (user?.password !== dto.password) {
       throw new UnauthorizedException(
         'メールアドレスまたはパスワードが違います',
       );
@@ -22,6 +30,20 @@ export class AuthService {
     const payload = { sub: user.id, username: user.email };
     const accessToken = await this.jwtService.signAsync(payload);
     return { accessToken, userId: user.id };
+  }
+
+  async signUpForEmail(dto: SignupForEmailDto) {
+    const user = await this.usersService.findUniqueByWhenUnAuthorized(
+      dto.email,
+    );
+    if (user) {
+      throw new BadRequestException('このメールアドレスは既に登録されています');
+    }
+    const newUser = await this.usersService.registrationProvisional(dto);
+    if (!newUser) {
+      throw new InternalServerErrorException('ユーザーの作成に失敗しました');
+    }
+    return newUser;
   }
 
   async getUser(userId: number) {
