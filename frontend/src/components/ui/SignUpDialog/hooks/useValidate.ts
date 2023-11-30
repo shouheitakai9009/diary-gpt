@@ -27,11 +27,6 @@ export const step1Schema = z
   .superRefine(({ password, confirmPassword }, ctx) => {
     if (password !== confirmPassword) {
       ctx.addIssue({
-        path: ['password'],
-        code: 'custom',
-        message: '確認用パスワードと一致しません',
-      });
-      ctx.addIssue({
         path: ['confirmPassword'],
         code: 'custom',
         message: 'パスワードと一致しません',

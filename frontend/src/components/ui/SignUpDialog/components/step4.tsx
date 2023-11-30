@@ -26,7 +26,8 @@ export const Step4 = ({ onBackStep, onRegistration }: Props) => {
   const [image, setImage] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
-  const onSubmit = () => {
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     onRegistration(image);
   };
 

@@ -21,6 +21,7 @@ import { slideVariants } from '../animations/slideVariants';
 import { Level } from '@/constants/level';
 import { Step3 } from './step3';
 import { Step4 } from './step4';
+import { Complete } from './complete';
 
 export const SignUpDialog = () => {
   const [fields, setFields] = useState<UserField>({});
@@ -60,6 +61,11 @@ export const SignUpDialog = () => {
     updateStepNum(4);
   };
 
+  const onRegistration = (uploadImage: File | null) => {
+    console.log('登録完了');
+    updateStepNum(5);
+  };
+
   return (
     <Dialog>
       <DialogTrigger>
@@ -75,9 +81,11 @@ export const SignUpDialog = () => {
           </DialogDescription>
         </DialogHeader>
         <div className="flex items-center gap-2">
-          <Progress value={stepNum * 25} />
+          <Progress value={(stepNum - 1) * 25} />
           <p className="flex justify-end items-end w-10">
-            <Text className="font-bold text-primary text-2xl">{stepNum}</Text>
+            <Text className="font-bold text-primary text-2xl">
+              {stepNum - 1}
+            </Text>
             <Text>/4</Text>
           </p>
         </div>
@@ -152,9 +160,25 @@ export const SignUpDialog = () => {
               }}
             >
               <Step4
-                onRegistration={() => updateStepNum(3)}
+                onRegistration={onRegistration}
                 onBackStep={() => updateStepNum(3)}
               />
+            </motion.div>
+          )}
+          {stepNum === 5 && (
+            <motion.div
+              key="step5"
+              custom={stepNum > previousStepNum ? -1 : 1}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: 'spring', stiffness: 300, damping: 25 },
+                opacity: { duration: 0 },
+              }}
+            >
+              <Complete />
             </motion.div>
           )}
         </AnimatePresence>
