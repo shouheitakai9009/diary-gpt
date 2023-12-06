@@ -16,6 +16,8 @@ import { FileUploadExceptionFilter } from 'src/exception/file.upload';
 import { UploadResponse } from 'src/types/cloudflare';
 import { UsersService } from 'src/users/users.service';
 
+const MAX_FILE_SIZE = 1024 * 1024 * 10;
+
 @Controller('upload')
 export class UploadController {
   constructor(private userService: UsersService) {}
@@ -30,10 +32,10 @@ export class UploadController {
           fileType: /^image\/(jpg|jpeg|png|gif|bmp|tiff|tif|webp|)$/,
         })
         .addMaxSizeValidator({
-          maxSize: 1024 * 1024 * 10,
+          maxSize: MAX_FILE_SIZE,
           message: (maxSize) =>
             `アップロードされたファイルが大きすぎます。${
-              maxSize / (1024 * 1024)
+              maxSize / (MAX_FILE_SIZE / 10)
             }MB以下のファイルを選択してください。`,
         })
         .build({

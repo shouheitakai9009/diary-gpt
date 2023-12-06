@@ -7,12 +7,19 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from '@/components/common/Menubar';
+import { useCreate } from '@/hooks/mutation/diary/useCreate';
 import { FilePlus } from 'lucide-react';
 
 export const Header = () => {
+  const createDiaryMutation = useCreate();
+
+  const onClickCreateDiary = async () => {
+    await createDiaryMutation.mutateAsync();
+  };
+
   return (
     <div className="flex w-full h-11 items-center justify-between px-2 border-b">
-      <Button size="sm" variant="ghost">
+      <Button size="sm" variant="ghost" onClick={onClickCreateDiary}>
         <FilePlus size={22} className="mr-2" />
         日記を作る
       </Button>

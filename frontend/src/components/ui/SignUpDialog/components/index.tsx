@@ -70,7 +70,6 @@ export const SignUpDialog = () => {
     const response = await signUpMutation.mutateAsync(fields);
     if (response) {
       if (uploadImage) {
-        console.log(response.id);
         await uploadImageMutation.mutateAsync({
           file: uploadImage,
           userId: response.id,

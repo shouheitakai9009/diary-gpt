@@ -58,7 +58,7 @@ export const SignInDialog = () => {
           ログイン
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle className="mb-1">ログイン</DialogTitle>
           <DialogDescription>
@@ -76,7 +76,7 @@ export const SignInDialog = () => {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex gap-2 items-center">
-                    <FormLabel className="w-[130px]">メールアドレス</FormLabel>
+                    <FormLabel className="w-[150px]">メールアドレス</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
@@ -95,7 +95,7 @@ export const SignInDialog = () => {
               render={({ field }) => (
                 <FormItem>
                   <div className="flex gap-2 items-center">
-                    <FormLabel className="w-[130px]">パスワード</FormLabel>
+                    <FormLabel className="w-[150px]">パスワード</FormLabel>
                     <FormControl>
                       <Input
                         type="password"

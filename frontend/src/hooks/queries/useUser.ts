@@ -15,7 +15,7 @@ export const useUser = () => {
       const response = await api.get<User>('/auth/me');
       return response.data;
     },
-    staleTime: 60 * 1000, // TODO: 本番環境ではもっと長くするべき
+    staleTime: 1000 * 60 /* sec */ * 60 /* min */ * 1 /* hour */ * 1 /* day */, // TODO: 本番環境ではもっと長くするべき
     enabled: !!accessToken,
   });
 };
