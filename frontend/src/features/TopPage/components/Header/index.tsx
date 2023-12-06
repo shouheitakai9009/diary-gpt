@@ -7,19 +7,33 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from '@/components/common/Menubar';
+import { useToast } from '@/hooks/common/useToast';
 import { useCreate } from '@/hooks/mutation/diary/useCreate';
+import { diaryState } from '@/recoil/diaryState/atom';
 import { FilePlus } from 'lucide-react';
+import { useSetRecoilState } from 'recoil';
 
 export const Header = () => {
+  const { toast } = useToast();
   const createDiaryMutation = useCreate();
+  const setSelectedDiary = useSetRecoilState(diaryState.selectedDiary);
 
   const onClickCreateDiary = async () => {
-    await createDiaryMutation.mutateAsync();
+    const response = await createDiaryMutation.mutateAsync();
+    if (response) {
+      setSelectedDiary(response);
+      toast('success', '新しい日記を作成しました、英語力を鍛えましょう💪');
+    }
   };
 
   return (
     <div className="flex w-full h-11 items-center justify-between px-2 border-b">
-      <Button size="sm" variant="ghost" onClick={onClickCreateDiary}>
+      <Button
+        type="button"
+        size="sm"
+        variant="ghost"
+        onClick={onClickCreateDiary}
+      >
         <FilePlus size={22} className="mr-2" />
         日記を作る
       </Button>

@@ -26,6 +26,7 @@ import { authState } from '@/recoil/authState/atom';
 import { useQueryClient } from 'react-query';
 import { userKey } from '@/hooks/queries/useUser';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/common/useToast';
 
 export const SignInDialog = () => {
   const [loading, setLoading] = useState(false);
@@ -34,6 +35,7 @@ export const SignInDialog = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const setAccessToken = useSetRecoilState(authState.accessToken);
+  const { toast } = useToast();
 
   const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
     setLoading(true);
@@ -46,6 +48,7 @@ export const SignInDialog = () => {
       queryClient.invalidateQueries([userKey]);
       navigate('/top');
       setLoading(false);
+      toast('success', 'おかえりなさい、今日の日記を作りましょう！');
     } catch (error) {
       setLoading(false);
     }

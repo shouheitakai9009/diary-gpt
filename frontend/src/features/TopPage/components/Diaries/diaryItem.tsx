@@ -19,6 +19,7 @@ export const DiaryItem = ({ diary, onClick }: Props) => {
 
   const isSelected = selectedDiary?.id === diary.id;
 
+  if (diary.drafts.length === 0) return null;
   return (
     <>
       <button

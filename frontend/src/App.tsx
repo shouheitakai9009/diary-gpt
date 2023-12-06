@@ -5,7 +5,6 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { RecoilRoot } from 'recoil';
 import { ThemeProvider } from './components/theme-provider';
 import { TopPage } from './features/TopPage';
-import { Toaster } from './components/common/Toaster';
 import { useToast } from './hooks/common/useToast';
 import { AxiosError } from 'axios';
 import { PrivateLayout } from './components/layout/private';
@@ -22,10 +21,7 @@ function App() {
       mutations: {
         onError: (err) => {
           if (err instanceof AxiosError) {
-            toast({
-              title: err.response?.data.message,
-              description: err.code,
-            });
+            toast('error', `${err.response?.data.message}`);
           }
         },
       },
@@ -45,7 +41,6 @@ function App() {
           </BrowserRouter>
           {import.meta.env.DEV && <ReactQueryDevtools />}
         </QueryClientProvider>
-        <Toaster />
       </ThemeProvider>
     </RecoilRoot>
   );

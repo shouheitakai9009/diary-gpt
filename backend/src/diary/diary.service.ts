@@ -11,16 +11,14 @@ export class DiaryService {
 
   async create(userId: number) {
     try {
-      const diary = await this.prismaService.diary.create({
+      const newDiary = await this.prismaService.diary.create({
         data: {
           userId,
         },
       });
-      const diaryDraft = await this.diaryDraftService.createForEachDiary(
-        diary.id,
-      );
+      await this.diaryDraftService.createForEachDiary(newDiary.id);
 
-      return diaryDraft;
+      return this.getCurrentDiaryDraft(userId, newDiary.id);
     } catch (e) {
       throw new InternalServerErrorException('日記の作成に失敗しました');
     }
