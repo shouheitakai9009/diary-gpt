@@ -1,35 +1,66 @@
 import { Input } from '@/components/common/Input';
 import { Textarea } from '@/components/common/Textarea';
 import { diaryState } from '@/recoil/diaryState/atom';
-import { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { settingState } from '@/recoil/settingState/atom';
+import { cn } from '@/utils/classnames';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 export const Content = () => {
-  const selectedDiary = useRecoilValue(diaryState.selectedDiary);
+  const [selectedDiary, setSelectedDiary] = useRecoilState(
+    diaryState.selectedDiary,
+  );
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const fontSize = useRecoilValue(settingState.fontSize);
 
-  useEffect(() => {
-    if (selectedDiary === null) return;
-
-    setTitle(selectedDiary.drafts[0].title);
-    setContent(selectedDiary.drafts[0].content);
-  }, [selectedDiary]);
+  if (selectedDiary === null) return null;
 
   return (
-    <section className="h-full md:min-w-[500px] md:w-2/3">
+    <section className="h-full">
       <Input
         placeholder="日記のタイトルを入力"
-        className="h-14 border-0 text-xl font-bold !ring-0 !ring-offset-0"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        className={cn(
+          'h-14 border-0 font-bold !ring-0 !ring-offset-0',
+          fontSize === 'tiny' && 'text-sm',
+          fontSize === 'small' && 'text-base',
+          fontSize === 'medium' && 'text-xl',
+          fontSize === 'large' && 'text-2xl',
+          fontSize === 'largest' && 'text-4xl',
+        )}
+        value={selectedDiary?.drafts[0].title ?? ''}
+        onChange={(e) =>
+          setSelectedDiary({
+            ...selectedDiary,
+            drafts: [
+              {
+                ...selectedDiary.drafts[0],
+                title: e.target.value,
+              },
+            ],
+          })
+        }
       />
       <Textarea
         placeholder="日記の本文を入力"
-        className="h-[calc(100%-3.5rem)] border-0 !ring-0 !ring-offset-0"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
+        className={cn(
+          'h-[calc(100%-3.5rem)] border-0 !ring-0 !ring-offset-0',
+          fontSize === 'tiny' && 'text-xs',
+          fontSize === 'small' && 'text-sm',
+          fontSize === 'medium' && 'text-base',
+          fontSize === 'large' && 'text-lg',
+          fontSize === 'largest' && 'text-3xl',
+        )}
+        value={selectedDiary?.drafts[0].content ?? ''}
+        onChange={(e) =>
+          setSelectedDiary({
+            ...selectedDiary,
+            drafts: [
+              {
+                ...selectedDiary.drafts[0],
+                content: e.target.value,
+              },
+            ],
+          })
+        }
       />
     </section>
   );

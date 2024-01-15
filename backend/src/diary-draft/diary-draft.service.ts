@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { SaveDraftDto } from 'src/diary/dto/saveDraft.dto';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -15,6 +16,26 @@ export class DiaryDraftService {
     });
 
     return diaryDraft;
+  }
+
+  async createDraft(diaryId: number, saveDraftDto: SaveDraftDto) {
+    const diaryDraft = await this.prismaService.diaryDraft.create({
+      data: {
+        diaryId,
+        title: saveDraftDto.title,
+        content: saveDraftDto.content,
+      },
+    });
+
+    return diaryDraft;
+  }
+
+  async deleteByDiaryId(diaryId: number) {
+    await this.prismaService.diaryDraft.deleteMany({
+      where: {
+        diaryId,
+      },
+    });
   }
 
   async getLatest(userId: number, diaryId: number) {

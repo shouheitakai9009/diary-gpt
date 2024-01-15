@@ -7,24 +7,13 @@ import {
   MenubarShortcut,
   MenubarTrigger,
 } from '@/components/common/Menubar';
-import { useToast } from '@/hooks/common/useToast';
-import { useCreate } from '@/hooks/mutation/diary/useCreate';
-import { diaryState } from '@/recoil/diaryState/atom';
 import { FilePlus } from 'lucide-react';
-import { useSetRecoilState } from 'recoil';
+import { useSave } from './useSave';
+import { useFontSize } from './useFontSize';
 
 export const Header = () => {
-  const { toast } = useToast();
-  const createDiaryMutation = useCreate();
-  const setSelectedDiary = useSetRecoilState(diaryState.selectedDiary);
-
-  const onClickCreateDiary = async () => {
-    const response = await createDiaryMutation.mutateAsync();
-    if (response) {
-      setSelectedDiary(response);
-      toast('success', '新しい日記を作成しました、英語力を鍛えましょう💪');
-    }
-  };
+  const { onClickCreateDiary, onClickSaveDraft, onClickSave } = useSave();
+  const { onClickForLargeSize, onClickForSmallSize } = useFontSize();
 
   return (
     <div className="flex w-full h-11 items-center justify-between px-2 border-b">
@@ -42,11 +31,14 @@ export const Header = () => {
         <MenubarMenu>
           <MenubarTrigger>日記設定</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem>
+            <MenubarItem onClick={onClickForLargeSize}>
               フォントを拡大
-              <MenubarShortcut>⌘T</MenubarShortcut>
+              <MenubarShortcut>⌘＋</MenubarShortcut>
             </MenubarItem>
-            <MenubarItem>フォントを縮小</MenubarItem>
+            <MenubarItem onClick={onClickForSmallSize}>
+              フォントを縮小
+              <MenubarShortcut>⌘ー</MenubarShortcut>
+            </MenubarItem>
           </MenubarContent>
         </MenubarMenu>
         <MenubarMenu>
@@ -69,8 +61,8 @@ export const Header = () => {
         <MenubarMenu>
           <MenubarTrigger>保存</MenubarTrigger>
           <MenubarContent>
-            <MenubarItem>下書き保存</MenubarItem>
-            <MenubarItem>保存</MenubarItem>
+            <MenubarItem onClick={onClickSaveDraft}>下書き保存</MenubarItem>
+            <MenubarItem onClick={onClickSave}>保存</MenubarItem>
             <MenubarItem>保存してフィードバック</MenubarItem>
           </MenubarContent>
         </MenubarMenu>

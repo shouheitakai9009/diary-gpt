@@ -13,10 +13,6 @@ export const LandingPage = () => {
 
   return (
     <article>
-      <img
-        src="https://www.illust-box.jp/db_img/sozai/00006/68840/watermark.jpg"
-        className="w-full h-full"
-      />
       <header className="flex justify-between items-center h-14 px-4">
         <h1>Landing Page</h1>
         {user ? (

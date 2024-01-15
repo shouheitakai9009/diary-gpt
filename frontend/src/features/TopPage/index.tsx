@@ -7,6 +7,11 @@ import { useEffect } from 'react';
 import { useRecoilState } from 'recoil';
 import { diaryState } from '@/recoil/diaryState/atom';
 import { useFetchDiaries } from '@/hooks/queries/diary/useFetchList';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/common/Resizable';
 
 export const TopPage = () => {
   const { data: diaries } = useFetchDiaries();
@@ -25,16 +30,29 @@ export const TopPage = () => {
     <article className="h-[100vh]">
       <main className="h-full md:flex">
         <Navigation />
-        <div className="h-full md:flex">
-          <Diaries />
-          <section className="h-full md:w-[calc(100vw-21rem)] md:min-w-[600px]">
-            <Header />
-            <div className="h-[calc(100vh-2.75rem)] md:flex">
-              <Content />
-              <Chat />
-            </div>
-          </section>
-        </div>
+        <ResizablePanelGroup direction="horizontal" className="">
+          <ResizablePanel defaultSize={20}>
+            <Diaries />
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel>
+            <>
+              <Header />
+              <ResizablePanelGroup
+                direction="horizontal"
+                className="!h-[calc(100%-2.75rem)]"
+              >
+                <ResizablePanel defaultSize={70}>
+                  <Content />
+                </ResizablePanel>
+                <ResizableHandle withHandle />
+                <ResizablePanel>
+                  <Chat />
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </>
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </main>
     </article>
   );

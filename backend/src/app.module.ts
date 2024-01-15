@@ -11,6 +11,7 @@ import { DiaryService } from './diary/diary.service';
 import { DiaryModule } from './diary/diary.module';
 import { DiaryDraftModule } from './diary-draft/diary-draft.module';
 import { DiaryDraftService } from './diary-draft/diary-draft.service';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { DiaryDraftService } from './diary-draft/diary-draft.service';
     ConfigModule,
     DiaryModule,
     DiaryDraftModule,
+    ChatModule,
   ],
   controllers: [AppController, UploadController, DiaryController],
   providers: [PrismaService, DiaryService, DiaryDraftService],

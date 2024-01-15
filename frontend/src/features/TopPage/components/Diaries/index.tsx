@@ -15,8 +15,11 @@ export const Diaries = () => {
   };
 
   return (
-    <section className="w-64 h-full overflow-y-scroll border-r block max-md:hidden">
-      <Input className="mx-auto w-60 mt-4" placeholder="単語やタイトルで検索" />
+    <section className="h-full overflow-y-scroll border-r block max-md:hidden">
+      <Input
+        className="mt-4 mx-4 !w-[calc(100%-2rem)]"
+        placeholder="単語やタイトルで検索"
+      />
       <div className="px-2 py-4">
         <Suspense fallback={<div>loading...</div>}>
           {diaries?.map((diary) => (

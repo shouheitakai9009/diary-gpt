@@ -12,7 +12,7 @@ import { Send } from 'lucide-react';
 
 export const Chat = () => {
   return (
-    <section className="min-w-[300px] w-1/3 h-full border-l px-2 pb-4 flex flex-col justify-between max-sm:hidden">
+    <section className="h-full border-l px-2 pb-4 flex flex-col justify-between max-sm:hidden">
       <div>
         <div className="flex items-center h-14">
           <Avatar className="w-8 h-8 mr-2">

@@ -33,7 +33,7 @@ export const DiaryItem = ({ diary, onClick }: Props) => {
       >
         <Heading
           as="h4"
-          className="leading-tight tracking-normal font-bold mb-2"
+          className="leading-tight tracking-normal font-bold mb-2 text-left line-clamp-2"
         >
           {diary.drafts[0].title}
         </Heading>
@@ -46,7 +46,7 @@ export const DiaryItem = ({ diary, onClick }: Props) => {
           )}
         </div>
       </button>
-      <Separator />
+      {!isSelected && <Separator />}
     </>
   );
 };
