@@ -30,8 +30,8 @@ export const TopPage = () => {
     <article className="h-[100vh]">
       <main className="h-full md:flex">
         <Navigation />
-        <ResizablePanelGroup direction="horizontal" className="">
-          <ResizablePanel defaultSize={20}>
+        <ResizablePanelGroup direction="horizontal">
+          <ResizablePanel defaultSize={20} minSize={14} maxSize={40}>
             <Diaries />
           </ResizablePanel>
           <ResizableHandle withHandle />
@@ -42,11 +42,11 @@ export const TopPage = () => {
                 direction="horizontal"
                 className="!h-[calc(100%-2.75rem)]"
               >
-                <ResizablePanel defaultSize={70}>
+                <ResizablePanel defaultSize={70} minSize={30}>
                   <Content />
                 </ResizablePanel>
                 <ResizableHandle withHandle />
-                <ResizablePanel>
+                <ResizablePanel defaultSize={30} minSize={24}>
                   <Chat />
                 </ResizablePanel>
               </ResizablePanelGroup>
