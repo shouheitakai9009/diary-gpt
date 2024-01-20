@@ -10,10 +10,17 @@ import {
 import { FilePlus } from 'lucide-react';
 import { useSave } from './useSave';
 import { useFontSize } from './useFontSize';
+import { useLayout } from './useLayout';
 
 export const Header = () => {
-  const { onClickCreateDiary, onClickSaveDraft, onClickSave } = useSave();
+  const {
+    onClickCreateDiary,
+    onClickSaveDraft,
+    onClickSave,
+    onClickFirstFeedback,
+  } = useSave();
   const { onClickForLargeSize, onClickForSmallSize } = useFontSize();
+  const { onChangeLayout } = useLayout();
 
   return (
     <div className="flex w-full h-11 items-center justify-between px-2 border-b">
@@ -28,6 +35,20 @@ export const Header = () => {
       </Button>
       <img src="/images/icon.png" className="w-7 h-7" />
       <Menubar className="border-0">
+        <MenubarMenu>
+          <MenubarTrigger>表示</MenubarTrigger>
+          <MenubarContent>
+            <MenubarItem onClick={() => onChangeLayout('default')}>
+              デフォルト
+            </MenubarItem>
+            <MenubarItem onClick={() => onChangeLayout('write')}>
+              執筆に集中
+            </MenubarItem>
+            <MenubarItem onClick={() => onChangeLayout('chat')}>
+              チャット
+            </MenubarItem>
+          </MenubarContent>
+        </MenubarMenu>
         <MenubarMenu>
           <MenubarTrigger>日記設定</MenubarTrigger>
           <MenubarContent>
@@ -63,7 +84,9 @@ export const Header = () => {
           <MenubarContent>
             <MenubarItem onClick={onClickSaveDraft}>下書き保存</MenubarItem>
             <MenubarItem onClick={onClickSave}>保存</MenubarItem>
-            <MenubarItem>保存してフィードバック</MenubarItem>
+            <MenubarItem onClick={onClickFirstFeedback}>
+              保存してフィードバック
+            </MenubarItem>
           </MenubarContent>
         </MenubarMenu>
       </Menubar>

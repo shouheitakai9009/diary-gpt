@@ -1,9 +1,8 @@
-import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
-export class SaveDraftDto {
+export class FirstFeedbackDto {
   @IsString()
   @IsNotEmpty()
-  @MinLength(1)
   @MaxLength(100)
   readonly title: string;
 
