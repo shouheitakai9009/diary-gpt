@@ -5,9 +5,11 @@ import { DiaryItem } from './diaryItem';
 import { useSetRecoilState } from 'recoil';
 import { diaryState } from '@/recoil/diaryState/atom';
 import { DiaryWithDraft } from '@/types/diary';
+import { useUser } from '@/hooks/queries/useUser';
 
 export const Diaries = () => {
-  const { data: diaries } = useFetchDiaries();
+  const { data: user } = useUser();
+  const { data: diaries } = useFetchDiaries(user?.id);
   const setSelectedDiary = useSetRecoilState(diaryState.selectedDiary);
 
   const handleClick = (diary: DiaryWithDraft) => {

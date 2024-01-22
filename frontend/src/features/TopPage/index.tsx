@@ -14,13 +14,15 @@ import {
 } from '@/components/common/Resizable';
 import { ImperativePanelHandle } from 'react-resizable-panels';
 import { useChangeLayout } from './hooks/useChangeLayout';
+import { useUser } from '@/hooks/queries/useUser';
 
 export const TopPage = () => {
   const diariesRef = useRef<ImperativePanelHandle>(null);
   const contentRef = useRef<ImperativePanelHandle>(null);
   const chatRef = useRef<ImperativePanelHandle>(null);
 
-  const { data: diaries } = useFetchDiaries();
+  const { data: user } = useUser();
+  const { data: diaries } = useFetchDiaries(user?.id);
   useChangeLayout({
     leftRef: diariesRef,
     midRef: contentRef,

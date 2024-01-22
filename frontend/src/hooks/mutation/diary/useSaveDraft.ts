@@ -2,10 +2,12 @@ import { useMutation, useQueryClient } from 'react-query';
 import { useAxiosWrapper } from '@/apis/useAxiosWrapper';
 import { fetchDiariesKey } from '@/hooks/queries/diary/useFetchList';
 import { DiaryWithDraft, SaveReqParams } from '@/types/diary';
+import { useUser } from '@/hooks/queries/useUser';
 
 export const useSaveDraft = () => {
   const { api } = useAxiosWrapper();
   const queryClient = useQueryClient();
+  const { data: user } = useUser();
 
   return useMutation({
     mutationFn: async (params: SaveReqParams) => {
@@ -17,7 +19,7 @@ export const useSaveDraft = () => {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries([fetchDiariesKey]);
+      queryClient.invalidateQueries([fetchDiariesKey(user?.id)]);
     },
   });
 };

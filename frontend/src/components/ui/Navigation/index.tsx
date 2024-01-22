@@ -17,6 +17,9 @@ import { BookHeart, LucideIcon, User2 } from 'lucide-react';
 import { useSetRecoilState } from 'recoil';
 import { authState } from '@/recoil/authState/atom';
 import { useToast } from '@/hooks/common/useToast';
+import { diaryState } from '@/recoil/diaryState/atom';
+import { useUser } from '@/hooks/queries/useUser';
+import { useQueryClient } from 'react-query';
 
 export const Navigation = () => {
   const [links] = useState<
@@ -27,11 +30,16 @@ export const Navigation = () => {
   ]);
 
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const setAccessToken = useSetRecoilState(authState.accessToken);
+  const setSelectedDiary = useSetRecoilState(diaryState.selectedDiary);
   const navigate = useNavigate();
+  const { data: user } = useUser();
 
   const onLogout = () => {
+    queryClient.invalidateQueries();
     setAccessToken(null);
+    setSelectedDiary(null);
     toast('success', 'ログアウトしました');
     navigate('/');
   };
@@ -60,7 +68,7 @@ export const Navigation = () => {
       <Popover>
         <PopoverTrigger asChild>
           <Avatar className="hover:scale-110 duration-75">
-            <AvatarImage src="https://pbs.twimg.com/profile_images/1691382408292294656/YA9KjsEx_400x400.jpg" />
+            <AvatarImage src={user?.imageSrc ?? undefined} />
             <AvatarFallback>
               <Skeleton className="w-10 h-10 rounded-full" />
             </AvatarFallback>
