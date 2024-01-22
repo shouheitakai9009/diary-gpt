@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
-export class FirstFeedbackDto {
+export class FeedbackDto {
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)

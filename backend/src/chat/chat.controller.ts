@@ -1,30 +1,33 @@
 import {
   Controller,
-  Put,
   UseGuards,
   Request,
   Param,
   Body,
+  Get,
+  Post,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { ChatService } from './chat.service';
-import { FirstFeedbackDto } from './dto/firstFeedback.dto';
+import { FeedbackDto } from './dto/feedback.dto';
 
 @Controller('chat')
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
   @UseGuards(AuthGuard)
-  @Put('first-feedback/:diaryId')
-  async firstFeedback(
+  @Post('feedback/:diaryId')
+  async feedback(
     @Request() req,
     @Param('diaryId') diaryId: string,
-    @Body() firstFeedbackDto: FirstFeedbackDto,
+    @Body() feedbackDto: FeedbackDto,
   ) {
-    return await this.chatService.firstFeedback(
-      req.user.sub,
-      Number(diaryId),
-      firstFeedbackDto,
-    );
+    return await this.chatService.feedback(Number(diaryId), feedbackDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('all/:diaryId')
+  async all(@Request() req, @Param('diaryId') diaryId: string) {
+    return await this.chatService.all(Number(diaryId));
   }
 }

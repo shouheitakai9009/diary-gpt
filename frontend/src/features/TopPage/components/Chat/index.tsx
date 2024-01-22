@@ -7,10 +7,60 @@ import { Badge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
 import { Input } from '@/components/common/Input';
 import { Separator } from '@/components/common/Separator';
+import { Skeleton } from '@/components/common/Skelton';
 import { Text } from '@/components/common/Text';
+import { useFetchChats } from '@/hooks/queries/chat/useFetch';
+import { chatState } from '@/recoil/chatState/atom';
+import { diaryState } from '@/recoil/diaryState/atom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
+import { useRecoilValue } from 'recoil';
+
+const MessageFromAI = ({
+  message,
+  isLoading,
+}: {
+  message?: string;
+  isLoading?: boolean;
+}) => {
+  return (
+    <motion.div className="flex justify-start mb-2">
+      <div className="max-w-[90%]">
+        <p className="bg-border rounded-lg px-3 py-2 text-sm">
+          {isLoading ? (
+            <div>
+              <Skeleton className="w-60 h-3 mb-1" />
+              <Skeleton className="w-48 h-3 mb-1" />
+              <Skeleton className="w-32 h-3 mb-1" />
+            </div>
+          ) : (
+            message
+          )}
+        </p>
+      </div>
+    </motion.div>
+  );
+};
+
+const MessageFromYou = ({ message }: { message: string }) => {
+  return (
+    <motion.div className="flex justify-end mb-2">
+      <div className="max-w-[80%]">
+        <p className="rounded-lg bg-gradient-to-tr from-primary to-destructive px-3 py-2 text-sm text-white">
+          {message}
+        </p>
+      </div>
+    </motion.div>
+  );
+};
 
 export const Chat = () => {
+  const selectedDiary = useRecoilValue(diaryState.selectedDiary);
+  const { data } = useFetchChats(selectedDiary?.id);
+  const isLoadingOfFirstFeedback = useRecoilValue(
+    chatState.isLoadingOfFirstFeedback,
+  );
+
   return (
     <section className="h-full border-l px-2 pb-4 flex flex-col justify-between max-sm:hidden">
       <div>
@@ -27,22 +77,16 @@ export const Chat = () => {
         </div>
         <Separator />
         <section className="py-4">
-          <div className="flex justify-start mb-2">
-            <div className="max-w-[90%]">
-              <p className="bg-border rounded-lg px-3 py-2 text-sm">
-                Sure, I'll draft a text based on the title "Went to a shopping
-                mall with my family". Here it is:
-              </p>
-            </div>
-          </div>
-          <div className="flex justify-end mb-2">
-            <div className="max-w-[80%]">
-              <p className="rounded-lg bg-gradient-to-tr from-primary to-destructive px-3 py-2 text-sm text-white">
-                Sure, I'll draft a text based on the title "Went to a shopping
-                mall with my family". Here it is:
-              </p>
-            </div>
-          </div>
+          <AnimatePresence>
+            {isLoadingOfFirstFeedback && <MessageFromAI isLoading />}
+            {data?.map((feedback) =>
+              feedback.isMe ? (
+                <MessageFromYou message={feedback.content} />
+              ) : (
+                <MessageFromAI message={feedback.content} />
+              ),
+            )}
+          </AnimatePresence>
         </section>
       </div>
       <section className="flex gap-2">

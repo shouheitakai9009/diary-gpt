@@ -1,28 +1,37 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { FirstFeedbackDto } from './dto/firstFeedback.dto';
+import { FeedbackDto } from './dto/feedback.dto';
 import { PrismaService } from 'src/prisma.service';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import {
+  FirstFeedbackResponse,
+  firstFeedbackKeys,
+} from 'src/types/firstFeedback';
 
 @Injectable()
 export class ChatService {
   constructor(private prismaService: PrismaService) {}
 
-  async firstFeedback(
-    userId: string,
-    diaryId: number,
-    firstFeedbackDto: FirstFeedbackDto,
-  ) {
-    const feedbacks = await this.prismaService.diaryFeedback.findMany({
+  async all(diaryId: number) {
+    return await this.prismaService.diaryFeedback.findMany({
       where: {
         diaryId,
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
     });
-    if (feedbacks.length > 0) {
+  }
+
+  async feedback(diaryId: number, feedbackDto: FeedbackDto) {
+    const diary = await this.prismaService.diary.findUnique({
+      where: {
+        id: diaryId,
+      },
+    });
+    if (!diary)
       throw new InternalServerErrorException(
-        '初めてのフィードバックのみ登録できます',
+        'Diaryレコードが登録されていません',
       );
-    }
-    console.log(firstFeedbackDto);
 
     const instance = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
     const model = instance.getGenerativeModel({
@@ -43,12 +52,13 @@ export class ChatService {
               あなたは在日アメリカ人女性で英語はネイティブレベルに話すことができ、日本語もネイティブレベルで話すことのできるバイリンガルです。
               あなたは日本人向けに英語を教えており、生徒の評判として、可愛げがありとても親しみやすいコミュニケーションで有名です。
               さて、生徒が以下の英文を作成してきました。あなたは英語講師として文法や単語の使い分け、ニュアンスの違い、イディオム等を考慮して、具体的な例文を交えながら適切なフィードバックを与えてください。
-              回答は日本語で、JSON（positive/negative/suggestions）形式で返却してください。
+              回答は日本語で、JSでJSON.parseが成功するようなJSON（positive/negative/suggestions）形式で返却してください。
+              プレフィックスに\`\`\`JSONと付与するのはやめてください。
 
           [タイトル]
-          ${firstFeedbackDto.title}
+          ${feedbackDto.title}
           [本文]
-          ${firstFeedbackDto.content}
+          ${feedbackDto.content}
           `,
             },
           ],
@@ -57,6 +67,36 @@ export class ChatService {
     };
 
     const result = await model.generateContent(prompt);
-    console.log(result.response.promptFeedback, result.response.text());
+    const response = JSON.parse(
+      result.response.text().replaceAll('`', ''),
+    ) as FirstFeedbackResponse;
+
+    const hasMatchKeys = Object.keys(response).every(
+      (key: keyof FirstFeedbackResponse) => firstFeedbackKeys.includes(key),
+    );
+
+    if (!hasMatchKeys)
+      throw new InternalServerErrorException(
+        'レスポンスのキー情報に不正なフィードバックが検出されました',
+      );
+    return await this.prismaService.diaryFeedback.createMany({
+      data: [
+        {
+          diaryId,
+          isMe: false,
+          content: `ポジティブ: ${response.positive.join('\n')}`,
+        },
+        {
+          diaryId,
+          isMe: false,
+          content: `ネガティブ: ${response.negative.join('\n')}`,
+        },
+        {
+          diaryId,
+          isMe: false,
+          content: `フィードバック: ${response.suggestions.join('\n')}`,
+        },
+      ],
+    });
   }
 }

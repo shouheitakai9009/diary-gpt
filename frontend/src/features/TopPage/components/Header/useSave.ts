@@ -1,5 +1,5 @@
 import { useToast } from '@/hooks/common/useToast';
-import { useFirstFeedback } from '@/hooks/mutation/chat/useSave';
+import { useFeedback } from '@/hooks/mutation/chat/useFeedback';
 import { useCreate } from '@/hooks/mutation/diary/useCreate';
 import { useSave as useSaveMutation } from '@/hooks/mutation/diary/useSave';
 import { useSaveDraft } from '@/hooks/mutation/diary/useSaveDraft';
@@ -12,7 +12,7 @@ export const useSave = () => {
   const createDiaryMutation = useCreate();
   const saveMutation = useSaveMutation();
   const saveDraftMutation = useSaveDraft();
-  const firstFeedbackMutation = useFirstFeedback();
+  const firstFeedbackMutation = useFeedback();
   const [selectedDiary, setSelectedDiary] = useRecoilState(
     diaryState.selectedDiary,
   );
