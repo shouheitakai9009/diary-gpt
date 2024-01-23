@@ -14,6 +14,7 @@ import { chatState } from '@/recoil/chatState/atom';
 import { diaryState } from '@/recoil/diaryState/atom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 
 const MessageFromAI = ({
@@ -25,16 +26,16 @@ const MessageFromAI = ({
 }) => {
   return (
     <motion.div className="flex justify-start mb-2">
-      <div className="max-w-[90%]">
+      <div className="w-[85%] max-w-[85%] overflow-hidden">
         <p className="bg-border rounded-lg px-3 py-2 text-sm">
           {isLoading ? (
-            <div>
-              <Skeleton className="w-60 h-3 mb-1" />
-              <Skeleton className="w-48 h-3 mb-1" />
-              <Skeleton className="w-32 h-3 mb-1" />
-            </div>
+            <>
+              <Skeleton className="h-3 mb-1 w-[80%]" />
+              <Skeleton className="h-3 mb-1 w-[50%]" />
+              <Skeleton className="h-3 mb-1 w-[30%]" />
+            </>
           ) : (
-            message
+            <pre className="whitespace-pre-wrap break-words">{message}</pre>
           )}
         </p>
       </div>
@@ -55,14 +56,25 @@ const MessageFromYou = ({ message }: { message: string }) => {
 };
 
 export const Chat = () => {
+  const wrapperRef = useRef<HTMLElement>(null);
   const selectedDiary = useRecoilValue(diaryState.selectedDiary);
-  const { data } = useFetchChats(selectedDiary?.id);
+  const { data, isLoading, isFetching } = useFetchChats(selectedDiary?.id);
   const isLoadingOfFirstFeedback = useRecoilValue(
     chatState.isLoadingOfFirstFeedback,
   );
 
+  useEffect(() => {
+    if ((data || isLoading || isFetching) && wrapperRef.current) {
+      console.log('test');
+      wrapperRef.current.scrollTo({
+        top: wrapperRef.current.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
+  }, [data, isLoading, isFetching]);
+
   return (
-    <section className="h-full border-l px-2 pb-4 flex flex-col justify-between max-sm:hidden">
+    <section className="h-full border-l px-2 flex flex-col justify-between max-sm:hidden">
       <div>
         <div className="flex items-center h-14">
           <Avatar className="w-8 h-8 mr-2">
@@ -76,9 +88,11 @@ export const Chat = () => {
           </div>
         </div>
         <Separator />
-        <section className="py-4">
+        <section
+          className="py-4 h-[calc(100vh-(3.5rem+2.75rem+4rem))] overflow-y-auto"
+          ref={wrapperRef}
+        >
           <AnimatePresence>
-            {isLoadingOfFirstFeedback && <MessageFromAI isLoading />}
             {data?.map((feedback) =>
               feedback.isMe ? (
                 <MessageFromYou message={feedback.content} />
@@ -86,10 +100,11 @@ export const Chat = () => {
                 <MessageFromAI message={feedback.content} />
               ),
             )}
+            {isLoadingOfFirstFeedback && <MessageFromAI isLoading />}
           </AnimatePresence>
         </section>
       </div>
-      <section className="flex gap-2">
+      <section className="flex gap-2 items-center h-16">
         <Input placeholder="Emilyに質問" />
         <Button size="icon">
           <Send strokeWidth={2} size={16} />

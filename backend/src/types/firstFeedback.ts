@@ -1,11 +1,15 @@
 export type FirstFeedbackResponse = Partial<{
-  positive: string[];
-  negative: string[];
-  suggestions: string[];
+  文法: string[];
+  語彙: string[];
+  文章の流れ: string[];
+  修正例: string;
+  日本語訳: string;
 }>;
 
 export const firstFeedbackKeys = [
-  'positive',
-  'negative',
-  'suggestions',
+  '文法',
+  '語彙',
+  '文章の流れ',
+  '修正例',
+  '日本語訳',
 ] as const;
